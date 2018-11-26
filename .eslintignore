@@ -1,0 +1,3 @@
+lib/**/*
+src/lib/vendor/**/*
+*.ts

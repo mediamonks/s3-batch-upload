@@ -1,0 +1,249 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>s3-batch-upload</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">s3-batch-upload</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> s3-batch-upload</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="s3-batch-upload">s3-batch-upload</h1>
+				<p>Super fast batched S3 folder uploads from CLI or API.</p>
+				<h2 id="installation">Installation</h2>
+				<pre><code class="lang-sh">yarn add s3-batch-upload
+</code></pre>
+				<pre><code class="lang-sh">npm i -S s3-batch-upload
+</code></pre>
+				<h2 id="basic-usage">Basic Usage</h2>
+				<h3 id="cli">CLI</h3>
+				<pre><code class="lang-sh"><span class="hljs-comment"># with config</span>
+s3-batch-upload -c ./config/configS3.json -b bucket-name -p ./files -r remote/path/<span class="hljs-keyword">in</span>/bucket
+
+<span class="hljs-comment"># with env vars</span>
+AWS_ACCESS_KEY_ID=AKIA...Q AWS_SECRET_ACCESS_KEY=jY...uJ s3-batch-upload -b bucket-name -p ./files -r remote/path/<span class="hljs-keyword">in</span>/bucket -g <span class="hljs-string">"*.jpg -C 200 -d"</span>
+</code></pre>
+				<h3 id="api">API</h3>
+				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> Uploader <span class="hljs-keyword">from</span> <span class="hljs-string">'s3-batch-upload'</span>;
+
+<span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> Uploader({
+  config: <span class="hljs-string">'./config/configS3.json'</span>, <span class="hljs-comment">// can also use environment variables</span>
+  bucket: <span class="hljs-string">'bucket-name'</span>,
+  localPath: <span class="hljs-string">'./files'</span>,
+  remotePath: <span class="hljs-string">'remote/path/in/bucket'</span>,
+  glob: <span class="hljs-string">'*.jpg'</span>, <span class="hljs-comment">// default is '*.*'</span>
+  concurrency: <span class="hljs-string">'200'</span>, <span class="hljs-comment">// default is 100</span>
+  dryRun: <span class="hljs-literal">true</span>, <span class="hljs-comment">// default is false</span>
+}).upload();
+</code></pre>
+				<h2 id="documentation">Documentation</h2>
+				<p>View the <a href="http://mediamonks.github.io/s3-batch-upload/">generated documentation</a>.</p>
+				<h2 id="building">Building</h2>
+				<p>In order to build s3-batch-upload, ensure that you have <a href="http://git-scm.com/downloads">Git</a>
+				and <a href="http://nodejs.org/">Node.js</a> installed.</p>
+				<p>Clone a copy of the repo:</p>
+				<pre><code class="lang-sh">git <span class="hljs-built_in">clone</span> https://github.com/mediamonks/s3-batch-upload.git
+</code></pre>
+				<p>Change to the s3-batch-upload directory:</p>
+				<pre><code class="lang-sh"><span class="hljs-built_in">cd</span> s3-batch-upload
+</code></pre>
+				<p>Install dev dependencies:</p>
+				<pre><code class="lang-sh">yarn
+</code></pre>
+				<p>Use one of the following main scripts:</p>
+				<pre><code class="lang-sh">yarn build            <span class="hljs-comment"># build this project</span>
+yarn dev              <span class="hljs-comment"># run compilers in watch mode, both for babel and typescript</span>
+yarn <span class="hljs-built_in">test</span>             <span class="hljs-comment"># run the unit tests incl coverage</span>
+yarn <span class="hljs-built_in">test</span>:dev         <span class="hljs-comment"># run the unit tests in watch mode</span>
+yarn lint             <span class="hljs-comment"># run eslint and tslint on this project</span>
+yarn doc              <span class="hljs-comment"># generate typedoc documentation</span>
+</code></pre>
+				<p>When installing this module, it adds a pre-commit hook, that runs lint and prettier commands
+				before committing, so you can be sure that everything checks out.</p>
+				<h2 id="contribute">Contribute</h2>
+				<p>View <a href="./CONTRIBUTING.md">CONTRIBUTING.md</a></p>
+				<h2 id="changelog">Changelog</h2>
+				<p>View <a href="./CHANGELOG.md">CHANGELOG.md</a></p>
+				<h2 id="authors">Authors</h2>
+				<p>View <a href="./AUTHORS.md">AUTHORS.md</a></p>
+				<h2 id="license">LICENSE</h2>
+				<p><a href="./LICENSE">MIT</a> © MediaMonks</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/uploader.html" class="tsd-kind-icon">Uploader</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#options" class="tsd-kind-icon">Options</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#aws" class="tsd-kind-icon">AWS</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#progressbar" class="tsd-kind-icon">Progress<wbr>Bar</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#chalk" class="tsd-kind-icon">chalk</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#fs" class="tsd-kind-icon">fs</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#glob" class="tsd-kind-icon">glob</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#mime" class="tsd-kind-icon">mime</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#ora" class="tsd-kind-icon">ora</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#path" class="tsd-kind-icon">path</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#yargs" class="tsd-kind-icon">yargs</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#streambatch" class="tsd-kind-icon">stream<wbr>Batch</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-is-not-exported">
+						<a href="globals.html#defaultoptions" class="tsd-kind-icon">default<wbr>Options</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
