@@ -25,6 +25,32 @@ s3-batch-upload -c ./config/configS3.json -b bucket-name -p ./files -r remote/pa
 AWS_ACCESS_KEY_ID=AKIA...Q AWS_SECRET_ACCESS_KEY=jY...uJ s3-batch-upload -b bucket-name -p ./files -r remote/path/in/bucket -g "*.jpg -C 200 -d"
 ```
 
+```
+Usage: cli.js <command> [options]
+
+Commands:
+  cli.js upload  Upload files to s3                                                                            [default]
+
+Required:
+  -b, --bucket       The bucket to upload to.                                                        [string] [required]
+  -p, --local-path   The path to the folder to upload.                                               [string] [required]
+  -r, --remote-path  The remote path in the bucket to upload the files to.                           [string] [required]
+
+Options:
+  -d, --dry-run      Do a dry run, don't do any upload.                                       [boolean] [default: false]
+  -C, --concurrency  The amount of simultaneous uploads, increase on faster internet connection. [number] [default: 100]
+  -g, --glob         A glob on filename level to filter the files to upload                    [string] [default: "*.*"]
+  -c, --config       The AWS config json path to load S3 credentials with loadFromPath.                         [string]
+  -h, --help         Show help                                                                                 [boolean]
+
+Examples:
+  cli.js upload -b bucket-name -p ./files  -r /data  Upload files from a local folder to a s3 bucket path
+  cli.js upload -d ...                               Dry run upload
+
+for more information about AWS authentication, please visit
+https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html
+```
+
 ### API
 ```ts
 import Uploader from 's3-batch-upload';
@@ -40,6 +66,22 @@ await new Uploader({
 }).upload();
 ```
 
+### S3 Authentication
+
+As seem above, you can either use environment variables, or a config file.
+
+When using a config file, add it to the `.gitignore`, because you don't want your credentials
+in your repo. Use the following template for the config file as stated in the [AWS Docs](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-json-file.html):
+
+```json
+{
+  "accessKeyId": "<YOUR_ACCESS_KEY_ID>", 
+  "secretAccessKey": "<YOUR_SECRET_ACCESS_KEY>", 
+  "region": "us-east-1"
+}
+```
+
+When using environment variables, check the [AWS docs](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html).
 
 ## Documentation
 
