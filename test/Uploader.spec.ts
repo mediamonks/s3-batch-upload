@@ -12,7 +12,7 @@ let uploader:Uploader;
 describe('Uploader', () => {
   describe('uploadFile', () => {
     it('should upload', async function() {
-      this.timeout(5000);
+      this.timeout(10000);
 
       const s3 = {
         upload(_, cb) {
@@ -25,7 +25,7 @@ describe('Uploader', () => {
         localPath: 'test/files',
         remotePath: 'fake',
         bucket: 'fake',
-        glob: '**/pano_001_1k_0_0_0.png',
+        glob: '**/demo.png',
         s3Client: <any>s3,
       });
 
@@ -36,7 +36,7 @@ describe('Uploader', () => {
 
       expect(args).to.deep.equal({
         Bucket: 'fake',
-        Key: 'fake/panoramas/family-guy/pano_001_1k_0_0_0.png',
+        Key: 'fake/demo.png',
         ContentType: 'image/png',
         CacheControl: '',
       });
@@ -60,11 +60,11 @@ describe('Uploader', () => {
         localPath: 'test/files',
         remotePath: 'fake',
         bucket: 'fake',
-        glob: '**/pano_001_1k_0_0_0.png',
+        glob: '**/demo.png',
         s3Client: <any>s3,
       });
 
-      await uploader.uploadFile('files/panoramas/family-guy/pano_001_1k_0_0_0.png', 'foo\\bar.png');
+      await uploader.uploadFile('files/demo.png', 'foo\\bar.png');
 
       const { Body, ...args} = (<any>s3.upload).lastCall.args[0];
 
