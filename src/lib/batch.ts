@@ -10,7 +10,7 @@ export default function streamBatch({
   files,
   processItem,
   onProgress,
-}: Options):Promise<void> {
+}: Options): Promise<void> {
   return new Promise(resolve => {
     let count = 0;
     const total = files.length;
@@ -25,7 +25,7 @@ export default function streamBatch({
         setTimeout(() => {
           onProgress();
           resolve();
-        }, 50)
+        }, 50);
       } else {
         onProgress();
 

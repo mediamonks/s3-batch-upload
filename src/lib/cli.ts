@@ -5,16 +5,24 @@ import Uploader from './Uploader';
 
 yargs
   .usage('Usage: $0 <command> [options]')
-  .command(['$0'], 'Upload files to s3', () => {}, (argv) => {
-    new Uploader(argv).upload();
-  })
-  .example('$0 -b bucket-name -p ./files  -r /data', 'Upload files from a local folder to a s3 bucket path')
+  .command(
+    ['$0'],
+    'Upload files to s3',
+    () => {},
+    argv => {
+      new Uploader(argv).upload();
+    },
+  )
+  .example(
+    '$0 -b bucket-name -p ./files  -r /data',
+    'Upload files from a local folder to a s3 bucket path',
+  )
   .example('$0 -d ...', 'Dry run upload')
   .option('d', {
     alias: 'dry-run',
     default: false,
-    describe: 'Do a dry run, don\'t do any upload.',
-    type: 'boolean'
+    describe: "Do a dry run, don't do any upload.",
+    type: 'boolean',
   })
   .option('b', {
     alias: 'bucket',
@@ -59,11 +67,15 @@ yargs
     type: 'string',
     nargs: 1,
   })
-  .demandOption(['bucket', 'local-path', 'remote-path'], 'Please provide at least the required arguments to upload.')
+  .demandOption(
+    ['bucket', 'local-path', 'remote-path'],
+    'Please provide at least the required arguments to upload.',
+  )
   .group(['bucket', 'local-path', 'remote-path'], 'Required:')
   .help('h')
   .alias('h', 'help')
-  .epilogue('for more information about AWS authentication, please visit https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html')
+  .epilogue(
+    'for more information about AWS authentication, please visit https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html',
+  )
   .version(false)
-  .wrap(Math.min(120, yargs.terminalWidth()))
-  .argv;
+  .wrap(Math.min(120, yargs.terminalWidth())).argv;
