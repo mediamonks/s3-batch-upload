@@ -105,11 +105,12 @@ export default class Uploader {
     });
   }
 
-  uploadFile(localFilePath: string, remotePath: string): Promise<void> {
+  public uploadFile(localFilePath: string, remotePath: string): Promise<void> {
     const body = fs.createReadStream(localFilePath);
+    const { dryRun, bucket: Bucket } = this.options;
 
     const params = {
-      Bucket: this.options.bucket,
+      Bucket,
       Key: remotePath.replace(/\\/, '/'),
       Body: body,
       ContentType: mime.getType(localFilePath),
@@ -117,7 +118,7 @@ export default class Uploader {
     };
 
     return new Promise(resolve => {
-      if (!this.options.dryRun) {
+      if (!dryRun) {
         this.s3.upload(params, err => {
           // tslint:disable-next-line no-console
           if (err) console.error('err:', err);
@@ -129,16 +130,17 @@ export default class Uploader {
     });
   }
 
-  getCacheControlValue(file: string): string {
-    if (this.options.cacheControl) {
+  public getCacheControlValue(file: string): string {
+    const { cacheControl } = this.options;
+    if (cacheControl) {
       // return single option for all files
-      if (typeof this.options.cacheControl === 'string') {
-        return this.options.cacheControl;
+      if (typeof cacheControl === 'string') {
+        return cacheControl;
       }
 
       // find match in glob patterns
-      const match = Object.keys(this.options.cacheControl).find(key => minimatch(file, key));
-      return (match && this.options.cacheControl[match]) || '';
+      const match = Object.keys(cacheControl).find(key => minimatch(file, key));
+      return (match && cacheControl[match]) || '';
     }
 
     // return default value
