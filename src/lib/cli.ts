@@ -59,6 +59,16 @@ yargs
     describe: 'Cache control for uploaded files, can be string for single value or list of glob settings',
     type: 'string',
     nargs: 1,
+    coerce: (value) => {
+      try {
+        // try to see if it's an object
+        const cc = JSON.parse(value);
+        if (typeof cc === 'object') {
+          return cc;
+        }
+      } catch (e) { }
+      return value;
+    }
   })
   // NOTE: For more info, see https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-json-file.html
   .option('c', {

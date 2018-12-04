@@ -37,18 +37,25 @@ Required:
   -r, --remote-path  The remote path in the bucket to upload the files to.                           [string] [required]
 
 Options:
-  -d, --dry-run      Do a dry run, don't do any upload.                                       [boolean] [default: false]
-  -C, --concurrency  The amount of simultaneous uploads, increase on faster internet connection. [number] [default: 100]
-  -g, --glob         A glob on filename level to filter the files to upload                    [string] [default: "*.*"]
-  -c, --config       The AWS config json path to load S3 credentials with loadFromPath.                         [string]
-  -h, --help         Show help                                                                                 [boolean]
+  -d, --dry-run        Do a dry run, don't do any upload.                                     [boolean] [default: false]
+  -C, --concurrency    The amount of simultaneous uploads, increase on faster internet connection.
+                                                                                                 [number] [default: 100]
+  -g, --glob           A glob on filename level to filter the files to upload                  [string] [default: "*.*"]
+  -a, --cache-control  Cache control for uploaded files, can be string for single value or list of glob settings
+                                                                                                  [string] [default: ""]
+  -c, --config         The AWS config json path to load S3 credentials with loadFromPath.                       [string]
+  -h, --help           Show help                                                                               [boolean]
 
 Examples:
-  cli.js upload -b bucket-name -p ./files  -r /data  Upload files from a local folder to a s3 bucket path
-  cli.js upload -d ...                               Dry run upload
+  cli.js -b bucket-name -p ./files  -r /data                    Upload files from a local folder to a s3 bucket path
+  cli.js ... -a "max-age: 300"                                  Set cache-control for all files
+  cli.js ... -a '{ "**/*.json": "max-age: 300", "**/*.*":       Upload files from a local folder to a s3 bucket path
+  "3600" }'
+  cli.js -d ...                                                 Dry run upload
 
 for more information about AWS authentication, please visit
 https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html
+
 ```
 
 ### API
