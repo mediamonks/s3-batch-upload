@@ -17,3 +17,4 @@ node_modules/
 /index.d.ts
 test/files/*
 !test/files/.gitkeep
+!test/files/demo.png

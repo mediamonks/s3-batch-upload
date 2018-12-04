@@ -52,7 +52,7 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-creden
 ```
 
 ### API
-```ts
+```js
 import Uploader from 's3-batch-upload';
 
 await new Uploader({
@@ -63,6 +63,12 @@ await new Uploader({
   glob: '*.jpg', // default is '*.*'
   concurrency: '200', // default is 100
   dryRun: true, // default is false
+  cacheControl: 'max-age: 300', // can be a string, for all uploade resources
+  cacheControl: { // or an object with globs as keys to match the input path
+    '**/settings.json': 'max-age: 60', // 1 mins for settings, specific matches should go first
+    '**/*.json': 'max-age: 300', // 5 mins for other jsons
+    '**/*.*': 'max-age: 3600', // 1 hour for everthing else
+  } 
 }).upload();
 ```
 

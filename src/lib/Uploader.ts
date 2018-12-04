@@ -2,6 +2,7 @@ import streamBatch from './batch';
 import S3 from 'aws-sdk/clients/s3';
 
 const glob = require('glob');
+const minimatch = require('minimatch');
 const path = require('path');
 const AWS = require('aws-sdk');
 const ProgressBar = require('progress');
@@ -18,6 +19,8 @@ export type Options = {
   glob?: string;
   concurrency?: number;
   dryRun?: boolean;
+  cacheControl?: string | { [key: string]: string };
+  s3Client?: S3;
 };
 
 const defaultOptions = {
@@ -46,7 +49,7 @@ export default class Uploader {
       throw new Error('No bucket defined!');
     }
 
-    this.s3 = new AWS.S3();
+    this.s3 = this.options.s3Client || new AWS.S3();
   }
 
   public upload(): Promise<void> {
@@ -102,20 +105,20 @@ export default class Uploader {
     });
   }
 
-  private uploadFile(localFilePath: string, remotePath: string): Promise<void> {
-    const { bucket, dryRun } = this.options;
-    const s3 = this.s3;
+  uploadFile(localFilePath: string, remotePath: string): Promise<void> {
+    const body = fs.createReadStream(localFilePath);
+
+    const params = {
+      Bucket: this.options.bucket,
+      Key: remotePath.replace(/\\/, '/'),
+      Body: body,
+      ContentType: mime.getType(localFilePath),
+      CacheControl: this.getCacheControlValue(localFilePath),
+    };
 
     return new Promise(resolve => {
-      const body = fs.createReadStream(localFilePath);
-      const params = {
-        Bucket: bucket,
-        Key: remotePath,
-        Body: body,
-        ContentType: mime.getType(localFilePath),
-      };
-      if (!dryRun) {
-        s3.upload(params, err => {
+      if (!this.options.dryRun) {
+        this.s3.upload(params, err => {
           // tslint:disable-next-line no-console
           if (err) console.error('err:', err);
           resolve();
@@ -124,5 +127,21 @@ export default class Uploader {
         resolve();
       }
     });
+  }
+
+  getCacheControlValue(file: string): string {
+    if (this.options.cacheControl) {
+      // return single option for all files
+      if (typeof this.options.cacheControl === 'string') {
+        return this.options.cacheControl;
+      }
+
+      // find match in glob patterns
+      const match = Object.keys(this.options.cacheControl).find(key => minimatch(file, key));
+      return (match && this.options.cacheControl[match]) || '';
+    }
+
+    // return default value
+    return '';
   }
 }

@@ -6,7 +6,7 @@ import Uploader from './Uploader';
 yargs
   .usage('Usage: $0 <command> [options]')
   .command(
-    ['$0'],
+    ['$0', 'upload'],
     'Upload files to s3',
     () => {},
     argv => {
@@ -15,6 +15,11 @@ yargs
   )
   .example(
     '$0 -b bucket-name -p ./files  -r /data',
+    'Upload files from a local folder to a s3 bucket path',
+  )
+  .example('$0 ... -a "max-age: 300"', 'Set cache-control for all files')
+  .example(
+    '$0 ... -a \'{ "**/*.json": "max-age: 300", "**/*.*": "3600" }\'',
     'Upload files from a local folder to a s3 bucket path',
   )
   .example('$0 -d ...', 'Dry run upload')
@@ -56,6 +61,14 @@ yargs
     alias: 'glob',
     default: '*.*',
     describe: 'A glob on filename level to filter the files to upload',
+    type: 'string',
+    nargs: 1,
+  })
+  .option('a', {
+    alias: 'cache-control',
+    default: '',
+    describe:
+      'Cache control for uploaded files, can be string for single value or list of glob settings',
     type: 'string',
     nargs: 1,
   })
