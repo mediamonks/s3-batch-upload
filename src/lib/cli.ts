@@ -5,18 +5,29 @@ import Uploader from './Uploader';
 
 yargs
   .usage('Usage: $0 <command> [options]')
-  .command(['$0', 'upload'], 'Upload files to s3', () => {}, (argv) => {
-    new Uploader(argv).upload();
-  })
-  .example('$0 -b bucket-name -p ./files  -r /data', 'Upload files from a local folder to a s3 bucket path')
+  .command(
+    ['$0', 'upload'],
+    'Upload files to s3',
+    () => {},
+    argv => {
+      new Uploader(argv).upload();
+    },
+  )
+  .example(
+    '$0 -b bucket-name -p ./files  -r /data',
+    'Upload files from a local folder to a s3 bucket path',
+  )
   .example('$0 ... -a "max-age: 300"', 'Set cache-control for all files')
-  .example('$0 ... -a \'{ "**/*.json": "max-age: 300", "**/*.*": "3600" }\'', 'Upload files from a local folder to a s3 bucket path')
+  .example(
+    '$0 ... -a \'{ "**/*.json": "max-age: 300", "**/*.*": "3600" }\'',
+    'Upload files from a local folder to a s3 bucket path',
+  )
   .example('$0 -d ...', 'Dry run upload')
   .option('d', {
     alias: 'dry-run',
     default: false,
-    describe: 'Do a dry run, don\'t do any upload.',
-    type: 'boolean'
+    describe: "Do a dry run, don't do any upload.",
+    type: 'boolean',
   })
   .option('b', {
     alias: 'bucket',
@@ -56,7 +67,8 @@ yargs
   .option('a', {
     alias: 'cache-control',
     default: '',
-    describe: 'Cache control for uploaded files, can be string for single value or list of glob settings',
+    describe:
+      'Cache control for uploaded files, can be string for single value or list of glob settings',
     type: 'string',
     nargs: 1,
     coerce: (value) => {
@@ -78,11 +90,15 @@ yargs
     type: 'string',
     nargs: 1,
   })
-  .demandOption(['bucket', 'local-path', 'remote-path'], 'Please provide at least the required arguments to upload.')
+  .demandOption(
+    ['bucket', 'local-path', 'remote-path'],
+    'Please provide at least the required arguments to upload.',
+  )
   .group(['bucket', 'local-path', 'remote-path'], 'Required:')
   .help('h')
   .alias('h', 'help')
-  .epilogue('for more information about AWS authentication, please visit https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html')
+  .epilogue(
+    'for more information about AWS authentication, please visit https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html',
+  )
   .version(false)
-  .wrap(Math.min(120, yargs.terminalWidth()))
-  .argv;
+  .wrap(Math.min(120, yargs.terminalWidth())).argv;

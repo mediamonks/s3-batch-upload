@@ -11,7 +11,6 @@ const chalk = require('chalk');
 const fs = require('fs');
 const mime = require('mime');
 
-
 export type Options = {
   bucket: string;
   localPath: string;
@@ -20,7 +19,7 @@ export type Options = {
   glob?: string;
   concurrency?: number;
   dryRun?: boolean;
-  cacheControl?: string | { [key: string]: string; };
+  cacheControl?: string | { [key: string]: string };
   s3Client?: S3;
 };
 
@@ -35,21 +34,18 @@ export default class Uploader {
   private options: Options;
   private bar: any;
 
-  constructor(options: Options)
-  {
+  constructor(options: Options) {
     this.options = {
       ...defaultOptions,
       ...options,
     };
 
-    if (this.options.config)
-    {
+    if (this.options.config) {
       AWS.config.loadFromPath(this.options.config);
     }
 
     // TODO: more checks on other options?
-    if (!this.options.bucket)
-    {
+    if (!this.options.bucket) {
       throw new Error('No bucket defined!');
     }
 
@@ -60,8 +56,9 @@ export default class Uploader {
     return this.run();
   }
 
-  private async run():Promise<void> {
+  private async run(): Promise<void> {
     const files = await this.getFiles();
+    const { concurrency, localPath, remotePath } = this.options;
 
     // a nice progress bar to show during upload
     this.bar = new ProgressBar('[:bar] :percent | :etas | :current / :total | :rate/fps ', {
@@ -74,13 +71,10 @@ export default class Uploader {
     // do the work!
     await streamBatch({
       files,
-      concurrency: this.options.concurrency,
-      processItem: (file:string):Promise<void> => {
-        const key = path.join(this.options.remotePath, file);
-        return this.uploadFile(
-          path.resolve(this.options.localPath, file),
-          key,
-        );
+      concurrency,
+      processItem: (file: string): Promise<void> => {
+        const key = path.join(remotePath, file);
+        return this.uploadFile(path.resolve(localPath, file), key);
       },
       onProgress: () => this.bar.tick(),
     });
@@ -90,22 +84,20 @@ export default class Uploader {
   }
 
   private getFiles(): Promise<Array<string>> {
-    const gatheringSpinner = ora(
-      `Gathering files from ${chalk.blue(this.options.localPath)} (please wait) ...`,
-    );
+    const { localPath, glob: globPath } = this.options;
+    const gatheringSpinner = ora(`Gathering files from ${chalk.blue(localPath)} (please wait) ...`);
+
     gatheringSpinner.start();
 
     return new Promise((resolve, reject) => {
-      glob(`**/${this.options.glob}`, { cwd: path.resolve(this.options.localPath) }, (err, files) => {
+      glob(`**/${globPath}`, { cwd: path.resolve(localPath) }, (err, files) => {
         if (err) {
           gatheringSpinner.fail(err);
           reject(err);
         }
 
         gatheringSpinner.succeed(
-          `Found ${chalk.green(files.length)} files at ${chalk.blue(
-            this.options.localPath,
-          )}, starting upload:`,
+          `Found ${chalk.green(files.length)} files at ${chalk.blue(localPath)}, starting upload:`,
         );
 
         resolve(files);
@@ -113,19 +105,20 @@ export default class Uploader {
     });
   }
 
-  uploadFile(localFilePath:string, remotePath:string): Promise<void> {
+  public uploadFile(localFilePath: string, remotePath: string): Promise<void> {
     const body = fs.createReadStream(localFilePath);
+    const { dryRun, bucket: Bucket } = this.options;
 
     const params = {
-      Bucket: this.options.bucket,
+      Bucket,
       Key: remotePath.replace(/\\/, '/'),
       Body: body,
       ContentType: mime.getType(localFilePath),
       CacheControl: this.getCacheControlValue(localFilePath),
     };
 
-    return new Promise((resolve) => {
-      if (!this.options.dryRun) {
+    return new Promise(resolve => {
+      if (!dryRun) {
         this.s3.upload(params, err => {
           // tslint:disable-next-line no-console
           if (err) console.error('err:', err);
@@ -134,25 +127,23 @@ export default class Uploader {
       } else {
         resolve();
       }
-    })
+    });
   }
 
-  getCacheControlValue(file:string ): string {
-    if (this.options.cacheControl) {
+  public getCacheControlValue(file: string): string {
+    const { cacheControl } = this.options;
+    if (cacheControl) {
       // return single option for all files
-      if (typeof this.options.cacheControl === 'string') {
-        return this.options.cacheControl;
+      if (typeof cacheControl === 'string') {
+        return cacheControl;
       }
 
       // find match in glob patterns
-      const match = Object.keys(this.options.cacheControl).find(key => minimatch(file, key));
-      return match && this.options.cacheControl[match] || '';
+      const match = Object.keys(cacheControl).find(key => minimatch(file, key));
+      return (match && cacheControl[match]) || '';
     }
 
     // return default value
     return '';
   }
 }
-
-
-
