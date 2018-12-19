@@ -17,9 +17,9 @@ yargs
     '$0 -b bucket-name -p ./files  -r /data',
     'Upload files from a local folder to a s3 bucket path',
   )
-  .example('$0 ... -a "max-age: 300"', 'Set cache-control for all files')
+  .example('$0 ... -a "max-age=300"', 'Set cache-control for all files')
   .example(
-    '$0 ... -a \'{ "**/*.json": "max-age: 300", "**/*.*": "3600" }\'',
+    '$0 ... -a \'{ "**/*.json": "max-age=300", "**/*.*": "max-age=3600" }\'',
     'Upload files from a local folder to a s3 bucket path',
   )
   .example('$0 -d ...', 'Dry run upload')
@@ -71,16 +71,16 @@ yargs
       'Cache control for uploaded files, can be string for single value or list of glob settings',
     type: 'string',
     nargs: 1,
-    coerce: (value) => {
+    coerce: value => {
       try {
         // try to see if it's an object
         const cc = JSON.parse(value);
         if (typeof cc === 'object') {
           return cc;
         }
-      } catch (e) { }
+      } catch (e) {}
       return value;
-    }
+    },
   })
   // NOTE: For more info, see https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-json-file.html
   .option('c', {

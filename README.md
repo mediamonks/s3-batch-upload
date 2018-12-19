@@ -48,9 +48,9 @@ Options:
 
 Examples:
   cli.js -b bucket-name -p ./files  -r /data                    Upload files from a local folder to a s3 bucket path
-  cli.js ... -a "max-age: 300"                                  Set cache-control for all files
-  cli.js ... -a '{ "**/*.json": "max-age: 300", "**/*.*":       Upload files from a local folder to a s3 bucket path
-  "3600" }'
+  cli.js ... -a "max-age=300"                                  Set cache-control for all files
+  cli.js ... -a '{ "**/*.json": "max-age=300", "**/*.*":       Upload files from a local folder to a s3 bucket path
+  "max-age=3600" }'
   cli.js -d ...                                                 Dry run upload
 
 for more information about AWS authentication, please visit
@@ -70,11 +70,11 @@ await new Uploader({
   glob: '*.jpg', // default is '*.*'
   concurrency: '200', // default is 100
   dryRun: true, // default is false
-  cacheControl: 'max-age: 300', // can be a string, for all uploade resources
+  cacheControl: 'max-age=300', // can be a string, for all uploade resources
   cacheControl: { // or an object with globs as keys to match the input path
-    '**/settings.json': 'max-age: 60', // 1 mins for settings, specific matches should go first
-    '**/*.json': 'max-age: 300', // 5 mins for other jsons
-    '**/*.*': 'max-age: 3600', // 1 hour for everthing else
+    '**/settings.json': 'max-age=60', // 1 mins for settings, specific matches should go first
+    '**/*.json': 'max-age=300', // 5 mins for other jsons
+    '**/*.*': 'max-age=3600', // 1 hour for everthing else
   } 
 }).upload();
 ```
