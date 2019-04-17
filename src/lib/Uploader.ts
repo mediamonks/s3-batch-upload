@@ -90,18 +90,24 @@ export default class Uploader {
     gatheringSpinner.start();
 
     return new Promise((resolve, reject) => {
-      glob(`**/${globPath}`, { cwd: path.resolve(localPath) }, (err, files) => {
-        if (err) {
-          gatheringSpinner.fail(err);
-          reject(err);
-        }
+      glob(
+        `**/${globPath}`,
+        { cwd: path.resolve(localPath) },
+        (err, files) => {
+          if (err) {
+            gatheringSpinner.fail(err);
+            reject(err);
+          }
 
-        gatheringSpinner.succeed(
-          `Found ${chalk.green(files.length)} files at ${chalk.blue(localPath)}, starting upload:`,
-        );
+          gatheringSpinner.succeed(
+            `Found ${chalk.green(files.length)} files at ${chalk.blue(
+              localPath
+            )}, starting upload:`,
+          );
 
-        resolve(files);
-      });
+          resolve(files);
+        },
+      );
     });
   }
 
@@ -111,7 +117,7 @@ export default class Uploader {
 
     const params = {
       Bucket,
-      Key: remotePath.replace(/\\/, '/'),
+      Key: remotePath.replace(/\\/g, '/'),
       Body: body,
       ContentType: mime.getType(localFilePath),
       CacheControl: this.getCacheControlValue(localFilePath),
