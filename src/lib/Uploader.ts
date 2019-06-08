@@ -21,7 +21,18 @@ export type Options = {
   dryRun?: boolean;
   cacheControl?: string | { [key: string]: string };
   s3Client?: S3;
+  accessControlLevel?: ObjectACL;
 };
+
+export type ObjectACL =
+  | 'private'
+  | 'public-read'
+  | 'public-read-write'
+  | 'authenticated-read'
+  | 'aws-exec-read'
+  | 'bucket-owner-read'
+  | 'bucket-owner-full-control'
+  | string;
 
 const defaultOptions = {
   dryRun: false,
@@ -90,38 +101,43 @@ export default class Uploader {
     gatheringSpinner.start();
 
     return new Promise((resolve, reject) => {
-      glob(
-        `**/${globPath}`,
-        { cwd: path.resolve(localPath) },
-        (err, files) => {
-          if (err) {
-            gatheringSpinner.fail(err);
-            reject(err);
-          }
+      glob(`**/${globPath}`, { cwd: path.resolve(localPath) }, (err, files) => {
+        if (err) {
+          gatheringSpinner.fail(err);
+          reject(err);
+        }
 
-          gatheringSpinner.succeed(
-            `Found ${chalk.green(files.length)} files at ${chalk.blue(
-              localPath
-            )}, starting upload:`,
-          );
+        gatheringSpinner.succeed(
+          `Found ${chalk.green(files.length)} files at ${chalk.blue(localPath)}, starting upload:`,
+        );
 
-          resolve(files);
-        },
-      );
+        resolve(files);
+      });
     });
   }
 
   public uploadFile(localFilePath: string, remotePath: string): Promise<void> {
     const body = fs.createReadStream(localFilePath);
-    const { dryRun, bucket: Bucket } = this.options;
-
-    const params = {
-      Bucket,
-      Key: remotePath.replace(/\\/g, '/'),
-      Body: body,
-      ContentType: mime.getType(localFilePath),
-      CacheControl: this.getCacheControlValue(localFilePath),
-    };
+    const { dryRun, bucket: Bucket, accessControlLevel: ACL } = this.options;
+    let params;
+    if (ACL) {
+      params = {
+        ACL,
+        Bucket,
+        Key: remotePath.replace(/\\/g, '/'),
+        Body: body,
+        ContentType: mime.getType(localFilePath),
+        CacheControl: this.getCacheControlValue(localFilePath),
+      };
+    } else {
+      params = {
+        Bucket,
+        Key: remotePath.replace(/\\/g, '/'),
+        Body: body,
+        ContentType: mime.getType(localFilePath),
+        CacheControl: this.getCacheControlValue(localFilePath),
+      };
+    }
 
     return new Promise(resolve => {
       if (!dryRun) {

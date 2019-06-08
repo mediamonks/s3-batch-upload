@@ -64,6 +64,13 @@ yargs
     type: 'string',
     nargs: 1,
   })
+  .option('acl', {
+    alias: 'access-control-level',
+    default: undefined,
+    describe: 'Sets the bucket access control level for uploaded files',
+    type: 'string',
+    nargs: 1,
+  })
   .option('a', {
     alias: 'cache-control',
     default: '',

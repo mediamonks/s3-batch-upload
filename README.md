@@ -43,6 +43,8 @@ Options:
   -g, --glob           A glob on filename level to filter the files to upload                  [string] [default: "*.*"]
   -a, --cache-control  Cache control for uploaded files, can be string for single value or list of glob settings
                                                                                                   [string] [default: ""]
+  -acl, --access-control-level  Sets the access control level for uploaded files
+                                                                                                  [string] [default: "undefined"]
   -c, --config         The AWS config json path to load S3 credentials with loadFromPath.                       [string]
   -h, --help           Show help                                                                               [boolean]
 
@@ -75,7 +77,8 @@ await new Uploader({
     '**/settings.json': 'max-age=60', // 1 mins for settings, specific matches should go first
     '**/*.json': 'max-age=300', // 5 mins for other jsons
     '**/*.*': 'max-age=3600', // 1 hour for everthing else
-  } 
+  },
+  accessControlLevel: 'bucket-owner-full-control' // optional, not passed if undefined. - available options - "private"|"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control"
 }).upload();
 ```
 
@@ -88,8 +91,8 @@ in your repo. Use the following template for the config file as stated in the [A
 
 ```json
 {
-  "accessKeyId": "<YOUR_ACCESS_KEY_ID>", 
-  "secretAccessKey": "<YOUR_SECRET_ACCESS_KEY>", 
+  "accessKeyId": "<YOUR_ACCESS_KEY_ID>",
+  "secretAccessKey": "<YOUR_SECRET_ACCESS_KEY>",
   "region": "us-east-1"
 }
 ```
