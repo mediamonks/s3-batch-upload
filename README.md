@@ -64,7 +64,7 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-creden
 ```js
 import Uploader from 's3-batch-upload';
 
-await new Uploader({
+const files = await new Uploader({
   config: './config/configS3.json', // can also use environment variables
   bucket: 'bucket-name',
   localPath: './files',
@@ -80,6 +80,9 @@ await new Uploader({
   },
   accessControlLevel: 'bucket-owner-full-control' // optional, not passed if undefined. - available options - "private"|"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control"
 }).upload();
+
+// the files array contains a list of uploaded keys, which you can use to build up the S3 urls.
+// e.g. "remote/path/in/bucket/demo.jpg"
 ```
 
 ### S3 Authentication
