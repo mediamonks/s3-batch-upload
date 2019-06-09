@@ -21,18 +21,8 @@ export type Options = {
   dryRun?: boolean;
   cacheControl?: string | { [key: string]: string };
   s3Client?: S3;
-  accessControlLevel?: ObjectACL;
+  accessControlLevel?: S3.ObjectCannedACL;
 };
-
-export type ObjectACL =
-  | 'private'
-  | 'public-read'
-  | 'public-read-write'
-  | 'authenticated-read'
-  | 'aws-exec-read'
-  | 'bucket-owner-read'
-  | 'bucket-owner-full-control'
-  | string;
 
 const defaultOptions = {
   dryRun: false,
@@ -119,24 +109,15 @@ export default class Uploader {
   public uploadFile(localFilePath: string, remotePath: string): Promise<void> {
     const body = fs.createReadStream(localFilePath);
     const { dryRun, bucket: Bucket, accessControlLevel: ACL } = this.options;
-    let params;
+    const params: S3.PutObjectRequest = {
+      Bucket,
+      Key: remotePath.replace(/\\/g, '/'),
+      Body: body,
+      ContentType: mime.getType(localFilePath),
+      CacheControl: this.getCacheControlValue(localFilePath),
+    };
     if (ACL) {
-      params = {
-        ACL,
-        Bucket,
-        Key: remotePath.replace(/\\/g, '/'),
-        Body: body,
-        ContentType: mime.getType(localFilePath),
-        CacheControl: this.getCacheControlValue(localFilePath),
-      };
-    } else {
-      params = {
-        Bucket,
-        Key: remotePath.replace(/\\/g, '/'),
-        Body: body,
-        ContentType: mime.getType(localFilePath),
-        CacheControl: this.getCacheControlValue(localFilePath),
-      };
+      params.ACL = ACL;
     }
 
     return new Promise(resolve => {
