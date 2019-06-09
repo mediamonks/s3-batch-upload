@@ -46,6 +46,43 @@ describe('Uploader', () => {
       (<any>s3.upload).restore();
     });
 
+    it('should upload with access control level options', async function() {
+      this.timeout(10000);
+
+      const s3 = {
+        upload(_, cb) {
+          cb(null);
+        }
+      };
+      spy(s3, "upload");
+
+      uploader = new Uploader({
+        localPath: 'test/files',
+        remotePath: 'fake',
+        bucket: 'fake',
+        glob: '**/demo.png',
+        s3Client: <any>s3,
+        accessControlLevel: 'bucket-owner-full-control'
+      });
+
+      await uploader.upload();
+
+      const { Body, ...args} = (<any>s3.upload).lastCall.args[0];
+
+
+      expect(args).to.deep.equal({
+        ACL: 'bucket-owner-full-control',
+        Bucket: 'fake',
+        Key: 'fake/demo.png',
+        ContentType: 'image/png',
+        CacheControl: '',
+      });
+
+      (<any>expect(Body).to.be.a).ReadableStream;
+
+      (<any>s3.upload).restore();
+    });
+
     it('should fix windows paths', async function() {
       this.timeout(5000);
 
