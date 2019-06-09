@@ -79,19 +79,71 @@ s3-batch-upload -c ./config/configS3.json -b bucket-name -p ./files -r remote/pa
 <span class="hljs-comment"># with env vars</span>
 AWS_ACCESS_KEY_ID=AKIA...Q AWS_SECRET_ACCESS_KEY=jY...uJ s3-batch-upload -b bucket-name -p ./files -r remote/path/<span class="hljs-keyword">in</span>/bucket -g <span class="hljs-string">"*.jpg -C 200 -d"</span>
 </code></pre>
-				<h3 id="api">API</h3>
-				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> Uploader <span class="hljs-keyword">from</span> <span class="hljs-string">'s3-batch-upload'</span>;
+				<pre><code><span class="hljs-attribute">Usage</span>: cli.js &lt;command&gt; [options]
 
-<span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> Uploader({
-  config: <span class="hljs-string">'./config/configS3.json'</span>, <span class="hljs-comment">// can also use environment variables</span>
+<span class="pf">Commands:
+  cli.js upload  Upload files <span class="hljs-keyword">to</span> s3                                                                            [<span class="hljs-keyword">default</span>]
+
+Required:
+  -b, --bucket       The bucket <span class="hljs-keyword">to</span> upload <span class="hljs-keyword">to</span>.                                                        [string] [required]
+  -p, --local-path   The path <span class="hljs-keyword">to</span> the folder <span class="hljs-keyword">to</span> upload.                                               [string] [required]
+  -r, --remote-path  The remote path <span class="hljs-keyword">in</span> the bucket <span class="hljs-keyword">to</span> upload the files <span class="hljs-keyword">to</span>.                           [string] [required]
+
+Options:
+  -d, --dry-run        Do a dry run, don't do <span class="hljs-literal">any</span> upload.                                     [boolean] [<span class="hljs-keyword">default</span>: false]
+  -C, --concurrency    The amount of simultaneous uploads, increase <span class="hljs-keyword">on</span> faster internet connection.
+                                                                                                 [number] [<span class="hljs-keyword">default</span>: <span class="hljs-number">100</span>]
+  -g, --glob           A glob <span class="hljs-keyword">on</span> filename level <span class="hljs-keyword">to</span> filter the files <span class="hljs-keyword">to</span> upload                  [string] [<span class="hljs-keyword">default</span>: <span class="hljs-string">"*.*"</span>]
+  -a, --cache-control  Cache control <span class="hljs-keyword">for</span> uploaded files, can be string <span class="hljs-keyword">for</span> single value or list of glob settings
+                                                                                                  [string] [<span class="hljs-keyword">default</span>: <span class="hljs-string">""</span>]
+  -acl, --access-control-level  Sets the access control level <span class="hljs-keyword">for</span> uploaded files
+                                                                                                  [string] [<span class="hljs-keyword">default</span>: <span class="hljs-string">"undefined"</span>]
+  -c, --config         The AWS config json path <span class="hljs-keyword">to</span> <span class="hljs-built_in">load</span> S3 credentials with <span class="hljs-built_in">load</span>FromPath.                       [string]
+  -h, --help           Show help                                                                               [boolean]
+
+Examples:
+  cli.js -b bucket-name -p ./files  -r /data                    Upload files <span class="hljs-keyword">from</span> a local folder <span class="hljs-keyword">to</span> a s3 bucket path
+  cli.js ... -a <span class="hljs-string">"max-age=300"</span>                                  Set cache-control <span class="hljs-keyword">for</span> <span class="hljs-literal">all</span> files
+  cli.js ... -a '{ <span class="hljs-string">"**/*.json"</span>: <span class="hljs-string">"max-age=300"</span>, <span class="hljs-string">"**/*.*"</span>:       Upload files <span class="hljs-keyword">from</span> a local folder <span class="hljs-keyword">to</span> a s3 bucket path
+  <span class="hljs-string">"max-age=3600"</span> }'
+  cli.js -d ...                                                 Dry run upload
+
+<span class="hljs-keyword">for</span> more information about AWS authentication, please visit
+https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html</span>
+</code></pre><h3 id="api">API</h3>
+				<pre><code class="lang-js"><span class="hljs-keyword">import</span> Uploader <span class="hljs-keyword">from</span> <span class="hljs-string">'s3-batch-upload'</span>;
+
+<span class="hljs-keyword">const</span> files = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> Uploader({
+  <span class="hljs-attr">config</span>: <span class="hljs-string">'./config/configS3.json'</span>, <span class="hljs-comment">// can also use environment variables</span>
   bucket: <span class="hljs-string">'bucket-name'</span>,
-  localPath: <span class="hljs-string">'./files'</span>,
-  remotePath: <span class="hljs-string">'remote/path/in/bucket'</span>,
-  glob: <span class="hljs-string">'*.jpg'</span>, <span class="hljs-comment">// default is '*.*'</span>
+  <span class="hljs-attr">localPath</span>: <span class="hljs-string">'./files'</span>,
+  <span class="hljs-attr">remotePath</span>: <span class="hljs-string">'remote/path/in/bucket'</span>,
+  <span class="hljs-attr">glob</span>: <span class="hljs-string">'*.jpg'</span>, <span class="hljs-comment">// default is '*.*'</span>
   concurrency: <span class="hljs-string">'200'</span>, <span class="hljs-comment">// default is 100</span>
   dryRun: <span class="hljs-literal">true</span>, <span class="hljs-comment">// default is false</span>
+  cacheControl: <span class="hljs-string">'max-age=300'</span>, <span class="hljs-comment">// can be a string, for all uploade resources</span>
+  cacheControl: { <span class="hljs-comment">// or an object with globs as keys to match the input path</span>
+    <span class="hljs-string">'**/settings.json'</span>: <span class="hljs-string">'max-age=60'</span>, <span class="hljs-comment">// 1 mins for settings, specific matches should go first</span>
+    <span class="hljs-string">'**/*.json'</span>: <span class="hljs-string">'max-age=300'</span>, <span class="hljs-comment">// 5 mins for other jsons</span>
+    <span class="hljs-string">'**/*.*'</span>: <span class="hljs-string">'max-age=3600'</span>, <span class="hljs-comment">// 1 hour for everthing else</span>
+  },
+  <span class="hljs-attr">accessControlLevel</span>: <span class="hljs-string">'bucket-owner-full-control'</span> <span class="hljs-comment">// optional, not passed if undefined. - available options - "private"|"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control"</span>
 }).upload();
+
+<span class="hljs-comment">// the files array contains a list of uploaded keys, which you can use to build up the S3 urls.</span>
+<span class="hljs-comment">// e.g. "remote/path/in/bucket/demo.jpg"</span>
 </code></pre>
+				<h3 id="s3-authentication">S3 Authentication</h3>
+				<p>As seem above, you can either use environment variables, or a config file.</p>
+				<p>When using a config file, add it to the <code>.gitignore</code>, because you don&#39;t want your credentials
+				in your repo. Use the following template for the config file as stated in the <a href="https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-json-file.html">AWS Docs</a>:</p>
+				<pre><code class="lang-json">{
+  <span class="hljs-attr">"accessKeyId"</span>: <span class="hljs-string">"&lt;YOUR_ACCESS_KEY_ID&gt;"</span>,
+  <span class="hljs-attr">"secretAccessKey"</span>: <span class="hljs-string">"&lt;YOUR_SECRET_ACCESS_KEY&gt;"</span>,
+  <span class="hljs-attr">"region"</span>: <span class="hljs-string">"us-east-1"</span>
+}
+</code></pre>
+				<p>When using environment variables, check the <a href="https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html">AWS docs</a>.</p>
 				<h2 id="documentation">Documentation</h2>
 				<p>View the <a href="http://mediamonks.github.io/s3-batch-upload/">generated documentation</a>.</p>
 				<h2 id="building">Building</h2>
@@ -161,6 +213,9 @@ yarn doc              <span class="hljs-comment"># generate typedoc documentatio
 						<a href="globals.html#mime" class="tsd-kind-icon">mime</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#minimatch" class="tsd-kind-icon">minimatch</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#ora" class="tsd-kind-icon">ora</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
@@ -169,7 +224,7 @@ yarn doc              <span class="hljs-comment"># generate typedoc documentatio
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#yargs" class="tsd-kind-icon">yargs</a>
 					</li>
-					<li class=" tsd-kind-function">
+					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="globals.html#streambatch" class="tsd-kind-icon">stream<wbr>Batch</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-is-not-exported">

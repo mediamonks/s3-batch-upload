@@ -163,5 +163,62 @@ describe('Uploader', () => {
       });
     });
 
+    describe('with uploadFile', () => {
+      it('should return the uploaded path', async function() {
+        this.timeout(5000);
+
+        const s3 = {
+          upload(_, cb) {
+            cb(null);
+          }
+        };
+        spy(s3, "upload");
+
+        uploader = new Uploader({
+          localPath: 'test/files',
+          remotePath: 'fake',
+          bucket: 'fake',
+          glob: '**/demo.png',
+          s3Client: <any>s3,
+        });
+
+        const result = await uploader.uploadFile('files/demo.png', 'foo\\bar.png');
+
+        expect(result).to.equal('foo/bar.png');
+
+        (<any>s3.upload).restore();
+      });
+    });
+
+    describe('with uploadFile', () => {
+      it('should return the uploaded paths', async function() {
+        this.timeout(10000);
+
+        const s3 = {
+          upload(_, cb) {
+            cb(null);
+          }
+        };
+        spy(s3, "upload");
+
+        uploader = new Uploader({
+          localPath: 'test/files',
+          remotePath: 'fake',
+          bucket: 'fake',
+          glob: '**/demo.png',
+          s3Client: <any>s3,
+          accessControlLevel: 'bucket-owner-full-control'
+        });
+
+        const results = await uploader.upload();
+
+        expect(results).to.deep.equal([
+          'fake/demo.png'
+        ]);
+
+        (<any>s3.upload).restore();
+      });
+    });
+
   });
 });

@@ -95,10 +95,11 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="uploader.html#getcachecontrolvalue" class="tsd-kind-icon">get<wbr>Cache<wbr>Control<wbr>Value</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="uploader.html#getfiles" class="tsd-kind-icon">get<wbr>Files</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="uploader.html#run" class="tsd-kind-icon">run</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="uploader.html#upload" class="tsd-kind-icon">upload</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="uploader.html#uploadfile" class="tsd-kind-icon">upload<wbr>File</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="uploader.html#uploadfile" class="tsd-kind-icon">upload<wbr>File</a></li>
 							</ul>
 						</section>
 					</div>
@@ -116,7 +117,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/Uploader.ts:33</li>
+									<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L36">lib/Uploader.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -138,7 +139,7 @@
 					<div class="tsd-signature tsd-kind-icon">bar<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in lib/Uploader.ts:33</li>
+							<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L36">lib/Uploader.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -148,7 +149,7 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../globals.html#options" class="tsd-signature-type">Options</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in lib/Uploader.ts:32</li>
+							<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L35">lib/Uploader.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -158,13 +159,42 @@
 					<div class="tsd-signature tsd-kind-icon">s3<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">S3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in lib/Uploader.ts:31</li>
+							<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L34">lib/Uploader.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getcachecontrolvalue" class="tsd-anchor"></a>
+					<h3>get<wbr>Cache<wbr>Control<wbr>Value</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Cache<wbr>Control<wbr>Value<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L160">lib/Uploader.ts:160</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>file: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Path to a local file, either relative to cwd, or absolute</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>The resolved CacheControl value based on the provided settings</p>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="getfiles" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Files</h3>
@@ -175,10 +205,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/Uploader.ts:89</li>
+									<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L98">lib/Uploader.ts:98</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Based on the local path and the provided glob pattern, this util function will find all relevant
+									files, which will be used to upload in another step.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A list of resolved files based on the glob pattern</p>
 						</li>
 					</ul>
 				</section>
@@ -186,16 +223,16 @@
 					<a name="run" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> run</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/Uploader.ts:60</li>
+									<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L64">lib/Uploader.ts:64</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -203,42 +240,61 @@
 					<a name="upload" class="tsd-anchor"></a>
 					<h3>upload</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">upload<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">upload<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/Uploader.ts:56</li>
+									<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L60">lib/Uploader.ts:60</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Executes the upload operation based on the provided options in the Uploader constructor.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A list of paths of the upload files relative to the bucket.</p>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="uploadfile" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> upload<wbr>File</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">upload<wbr>File<span class="tsd-signature-symbol">(</span>localFilePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, remotePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<h3>upload<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">upload<wbr>File<span class="tsd-signature-symbol">(</span>localFilePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, remotePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in lib/Uploader.ts:113</li>
+									<li>Defined in <a href="https://github.com/mediamonks/s3-batch-upload/blob/12a6fe2/src/lib/Uploader.ts#L128">lib/Uploader.ts:128</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Uploads a single file to S3 from the local to the remote path with the available options,
+									and returns the uploaded location.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>localFilePath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Path to the local file, either relative to cwd, or absolute</p>
+									</div>
 								</li>
 								<li>
 									<h5>remotePath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The path to upload the file to in the bucket</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>The remote path upload location relative to the bucket</p>
 						</li>
 					</ul>
 				</section>
@@ -271,6 +327,9 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="uploader.html#s3" class="tsd-kind-icon">s3</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="uploader.html#getcachecontrolvalue" class="tsd-kind-icon">get<wbr>Cache<wbr>Control<wbr>Value</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="uploader.html#getfiles" class="tsd-kind-icon">get<wbr>Files</a>
 							</li>
@@ -280,7 +339,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="uploader.html#upload" class="tsd-kind-icon">upload</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="uploader.html#uploadfile" class="tsd-kind-icon">upload<wbr>File</a>
 							</li>
 						</ul>
@@ -309,6 +368,9 @@
 						<a href="../globals.html#mime" class="tsd-kind-icon">mime</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="../globals.html#minimatch" class="tsd-kind-icon">minimatch</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="../globals.html#ora" class="tsd-kind-icon">ora</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
@@ -317,7 +379,7 @@
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="../globals.html#yargs" class="tsd-kind-icon">yargs</a>
 					</li>
-					<li class=" tsd-kind-function">
+					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="../globals.html#streambatch" class="tsd-kind-icon">stream<wbr>Batch</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-is-not-exported">

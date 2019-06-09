@@ -53,11 +53,15 @@ export default class Uploader {
     this.s3 = this.options.s3Client || new AWS.S3();
   }
 
-  public upload(): Promise<void> {
+  /**
+   * Executes the upload operation based on the provided options in the Uploader constructor.
+   * @returns A list of paths of the upload files relative to the bucket.
+   */
+  public upload(): Promise<string[]> {
     return this.run();
   }
 
-  private async run(): Promise<void> {
+  private async run(): Promise<string[]> {
     const files = await this.getFiles();
     const { concurrency, localPath, remotePath } = this.options;
 
@@ -70,10 +74,10 @@ export default class Uploader {
     });
 
     // do the work!
-    await streamBatch({
+    const results = await streamBatch({
       files,
       concurrency,
-      processItem: (file: string): Promise<void> => {
+      processItem: (file: string): Promise<string> => {
         const key = path.join(remotePath, file);
         return this.uploadFile(path.resolve(localPath, file), key);
       },
@@ -82,8 +86,15 @@ export default class Uploader {
 
     // tslint:disable-next-line no-console
     console.log('Upload complete!');
+
+    return results;
   }
 
+  /**
+   * Based on the local path and the provided glob pattern, this util function will find all relevant
+   * files, which will be used to upload in another step.
+   * @returns A list of resolved files based on the glob pattern
+   */
   private getFiles(): Promise<Array<string>> {
     const { localPath, glob: globPath } = this.options;
     const gatheringSpinner = ora(`Gathering files from ${chalk.blue(localPath)} (please wait) ...`);
@@ -106,7 +117,15 @@ export default class Uploader {
     });
   }
 
-  public uploadFile(localFilePath: string, remotePath: string): Promise<void> {
+  /**
+   * Uploads a single file to S3 from the local to the remote path with the available options,
+   * and returns the uploaded location.
+   *
+   * @param localFilePath Path to the local file, either relative to cwd, or absolute
+   * @param remotePath The path to upload the file to in the bucket
+   * @returns The remote path upload location relative to the bucket
+   */
+  public uploadFile(localFilePath: string, remotePath: string): Promise<string> {
     const body = fs.createReadStream(localFilePath);
     const { dryRun, bucket: Bucket, accessControlLevel: ACL } = this.options;
     const params: S3.PutObjectRequest = {
@@ -125,14 +144,19 @@ export default class Uploader {
         this.s3.upload(params, err => {
           // tslint:disable-next-line no-console
           if (err) console.error('err:', err);
-          resolve();
+          resolve(params.Key);
         });
       } else {
-        resolve();
+        resolve(params.Key);
       }
     });
   }
 
+  /**
+   *
+   * @param file Path to a local file, either relative to cwd, or absolute
+   * @return The resolved CacheControl value based on the provided settings
+   */
   public getCacheControlValue(file: string): string {
     const { cacheControl } = this.options;
     if (cacheControl) {

@@ -1,22 +1,24 @@
-export type Options = {
+export type Options<T> = {
   concurrency: number;
   files: Array<string>;
-  processItem: (file: string) => Promise<void>;
+  processItem: (file: string) => Promise<T>;
   onProgress: () => void;
 };
 
-export default function streamBatch({
+export default function streamBatch<T>({
   concurrency,
   files,
   processItem,
   onProgress,
-}: Options): Promise<void> {
+}: Options<T>): Promise<T[]> {
   return new Promise(resolve => {
     let count = 0;
     const total = files.length;
+    const results: T[] = [];
 
     // when upload for one item is done, complete or process the next
-    const onItemDone = () => {
+    const onItemDone = (result: T) => {
+      results.push(result);
       count += 1;
 
       // if completed
@@ -24,7 +26,7 @@ export default function streamBatch({
         // temp fix for https://github.com/visionmedia/node-progress/pull/183
         setTimeout(() => {
           onProgress();
-          resolve();
+          resolve(results);
         }, 50);
       } else {
         onProgress();
