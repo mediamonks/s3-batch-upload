@@ -17,6 +17,7 @@ export type Options = {
   remotePath: string;
   config?: string;
   glob?: string;
+  globOptions?: object;
   concurrency?: number;
   dryRun?: boolean;
   cacheControl?: string | { [key: string]: string };
@@ -28,6 +29,7 @@ const defaultOptions = {
   dryRun: false,
   concurrency: 100,
   glob: '*.*',
+  globOptions: {},
 };
 
 export default class Uploader {
@@ -96,13 +98,13 @@ export default class Uploader {
    * @returns A list of resolved files based on the glob pattern
    */
   private getFiles(): Promise<Array<string>> {
-    const { localPath, glob: globPath } = this.options;
+    const { localPath, glob: globPath, globOptions } = this.options;
     const gatheringSpinner = ora(`Gathering files from ${chalk.blue(localPath)} (please wait) ...`);
 
     gatheringSpinner.start();
 
     return new Promise((resolve, reject) => {
-      glob(`**/${globPath}`, { cwd: path.resolve(localPath) }, (err, files) => {
+      glob(`**/${globPath}`, { ...globOptions, cwd: path.resolve(localPath) }, (err, files) => {
         if (err) {
           gatheringSpinner.fail(err);
           reject(err);
