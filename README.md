@@ -41,6 +41,7 @@ Options:
   -C, --concurrency    The amount of simultaneous uploads, increase on faster internet connection.
                                                                                                  [number] [default: 100]
   -g, --glob           A glob on filename level to filter the files to upload                  [string] [default: "*.*"]
+  --go, --glob-options  Options to pass to the glob module                                [string] [default: "undefined]
   -a, --cache-control  Cache control for uploaded files, can be string for single value or list of glob settings
                                                                                                   [string] [default: ""]
   -acl, --access-control-level  Sets the access control level for uploaded files
@@ -53,6 +54,7 @@ Examples:
   cli.js ... -a "max-age=300"                                  Set cache-control for all files
   cli.js ... -a '{ "**/*.json": "max-age=300", "**/*.*":       Upload files from a local folder to a s3 bucket path
   "max-age=3600" }'
+  cli.js ... -g "*" --go.nodir true --go.dot true               Upload files from a local folder (including files with or without extension and .dot files)
   cli.js -d ...                                                 Dry run upload
 
 for more information about AWS authentication, please visit
@@ -70,6 +72,7 @@ const files = await new Uploader({
   localPath: './files',
   remotePath: 'remote/path/in/bucket',
   glob: '*.jpg', // default is '*.*'
+  globOptions: { nodir: true, dot: true }, // optional, additional options to pass to "glob" module
   concurrency: '200', // default is 100
   dryRun: true, // default is false
   cacheControl: 'max-age=300', // can be a string, for all uploade resources
