@@ -64,6 +64,12 @@ yargs
     type: 'string',
     nargs: 1,
   })
+  .option('go', {
+    alias: 'glob-options',
+    default: undefined,
+    describe: 'An option to pass to glob module',
+    type: 'string',
+  })
   .option('acl', {
     alias: 'access-control-level',
     default: undefined,
