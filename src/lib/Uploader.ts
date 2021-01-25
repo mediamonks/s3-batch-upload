@@ -23,7 +23,7 @@ export type Options = {
   cacheControl?: string | { [key: string]: string };
   s3Client?: S3;
   accessControlLevel?: S3.ObjectCannedACL;
-  allowOverwrite?: boolean;
+  overwrite?: boolean;
 };
 
 const defaultOptions = {
@@ -31,7 +31,7 @@ const defaultOptions = {
   concurrency: 100,
   glob: '*.*',
   globOptions: {},
-  allowOverwrite: true,
+  overwrite: true,
 };
 
 export default class Uploader {
@@ -135,7 +135,7 @@ export default class Uploader {
       Bucket,
       Key: remotePath.replace(/\\/g, '/'),
     };
-    if (!this.options.allowOverwrite) {
+    if (!this.options.overwrite) {
       try {
         await this.s3.headObject(baseParams).promise();
         // tslint:disable-next-line no-console
@@ -145,6 +145,7 @@ export default class Uploader {
         if (err.code !== 'NotFound') {
           // tslint:disable-next-line no-console
           console.error('err:', err);
+          throw err;
         }
       }
     }
