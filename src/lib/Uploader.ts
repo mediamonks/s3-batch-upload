@@ -23,6 +23,7 @@ export type Options = {
   cacheControl?: string | { [key: string]: string };
   s3Client?: S3;
   accessControlLevel?: S3.ObjectCannedACL;
+  allowOverwrite?: boolean;
 };
 
 const defaultOptions = {
@@ -30,6 +31,7 @@ const defaultOptions = {
   concurrency: 100,
   glob: '*.*',
   globOptions: {},
+  allowOverwrite: true,
 };
 
 export default class Uploader {
@@ -127,12 +129,28 @@ export default class Uploader {
    * @param remotePath The path to upload the file to in the bucket
    * @returns The remote path upload location relative to the bucket
    */
-  public uploadFile(localFilePath: string, remotePath: string): Promise<string> {
-    const body = fs.createReadStream(localFilePath);
+  public async uploadFile(localFilePath: string, remotePath: string): Promise<string> {
     const { dryRun, bucket: Bucket, accessControlLevel: ACL } = this.options;
-    const params: S3.PutObjectRequest = {
+    const baseParams = {
       Bucket,
       Key: remotePath.replace(/\\/g, '/'),
+    };
+    if (!this.options.allowOverwrite) {
+      try {
+        await this.s3.headObject(baseParams).promise();
+        // tslint:disable-next-line no-console
+        console.log('File exists, skipping: ', baseParams.Key);
+        return baseParams.Key;
+      } catch (err) {
+        if (err.code !== 'NotFound') {
+          // tslint:disable-next-line no-console
+          console.error('err:', err);
+        }
+      }
+    }
+    const body = fs.createReadStream(localFilePath);
+    const params: S3.PutObjectRequest = {
+      ...baseParams,
       Body: body,
       ContentType: mime.getType(localFilePath),
       CacheControl: this.getCacheControlValue(localFilePath),
