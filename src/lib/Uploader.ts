@@ -160,17 +160,15 @@ export default class Uploader {
       params.ACL = ACL;
     }
 
-    return new Promise(resolve => {
-      if (!dryRun) {
-        this.s3.upload(params, err => {
-          // tslint:disable-next-line no-console
-          if (err) console.error('err:', err);
-          resolve(params.Key);
-        });
-      } else {
-        resolve(params.Key);
+    if (!dryRun) {
+      try {
+        await this.s3.upload(params).promise();
+      } catch (err) {
+        // tslint:disable-next-line no-console
+        console.error('err:', err);
       }
-    });
+    }
+    return params.Key;
   }
 
   /**
