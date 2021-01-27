@@ -22,6 +22,7 @@ yargs
     '$0 ... -a \'{ "**/*.json": "max-age=300", "**/*.*": "max-age=3600" }\'',
     'Upload files from a local folder to a s3 bucket path',
   )
+  .example('$0 --no-overwrite ...', 'Skip uploading files which exist already on s3')
   .example('$0 -d ...', 'Dry run upload')
   .option('d', {
     alias: 'dry-run',
@@ -106,9 +107,9 @@ yargs
   .option('o', {
     alias: 'overwrite',
     default: true,
-    describe: 'Overwrite remote files with the same name, or skip them.',
+    describe:
+      'Overwrite remote files with the same name (default behavior), or skip them with --no-overwrite.',
     type: 'boolean',
-    nargs: 1,
   })
   .demandOption(
     ['bucket', 'local-path', 'remote-path'],

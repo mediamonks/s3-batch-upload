@@ -56,6 +56,7 @@ Examples:
   cli.js ... -a '{ "**/*.json": "max-age=300", "**/*.*":       Upload files from a local folder to a s3 bucket path
   "max-age=3600" }'
   cli.js ... -g "*" --go.nodir true --go.dot true               Upload files from a local folder (including files with or without extension and .dot files)
+  cli.js --no-overwrite ...                                     Skip uploading files which exist already on s3
   cli.js -d ...                                                 Dry run upload
 
 for more information about AWS authentication, please visit
