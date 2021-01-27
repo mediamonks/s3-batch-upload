@@ -117,6 +117,86 @@ describe('Uploader', () => {
 
       (<any>s3.upload).restore();
     });
+
+    describe('with option overwrite: false', () => {
+      it('should not overwrite existing file', async function() {
+        this.timeout(10000);
+
+        const s3 = {
+          upload(_, cb) {
+            cb(null);
+          },
+          headObject(_) {
+            return {
+              promise() {
+                return Promise.resolve(null)
+              }
+            }
+          }
+        };
+        const uploadSpy = spy(s3, 'upload');
+        spy(s3, 'headObject');
+
+        uploader = new Uploader({
+          localPath: 'test/files',
+          remotePath: 'fake',
+          bucket: 'fake',
+          glob: '**/demo.png',
+          s3Client: <any>s3,
+          overwrite: false,
+        });
+
+        await uploader.upload();
+
+        const args = (<any>s3.headObject).lastCall.args[0]
+        expect(args).to.deep.equal({
+          Bucket: 'fake',
+          Key: 'fake/demo.png',
+        });
+        expect(uploadSpy).to.have.callCount(0);
+        (<any>s3.upload).restore();
+      });
+
+      it('should upload existing file', async function() {
+        this.timeout(10000);
+
+        const s3 = {
+          upload(_, cb) {
+            cb(null);
+          },
+          headObject(_) {
+            return {
+              promise() {
+                const err: any = new Error()
+                err.code = 'NotFound'
+                return Promise.reject(err)
+              }
+            }
+          }
+        };
+        const uploadSpy = spy(s3, 'upload');
+        spy(s3, 'headObject');
+
+        uploader = new Uploader({
+          localPath: 'test/files',
+          remotePath: 'fake',
+          bucket: 'fake',
+          glob: '**/demo.png',
+          s3Client: <any>s3,
+          overwrite: false,
+        });
+
+        await uploader.upload();
+
+        const args = (<any>s3.headObject).lastCall.args[0]
+        expect(args).to.deep.equal({
+          Bucket: 'fake',
+          Key: 'fake/demo.png',
+        });
+        expect(uploadSpy).to.have.callCount(1);
+        (<any>s3.upload).restore();
+      });
+    })
   });
 
   describe('getCacheControlValue', () => {
