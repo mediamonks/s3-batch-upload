@@ -103,6 +103,13 @@ yargs
     type: 'string',
     nargs: 1,
   })
+  .option('o', {
+    alias: 'overwrite',
+    default: true,
+    describe: 'Overwrite remote files with the same name, or skip them.',
+    type: 'boolean',
+    nargs: 1,
+  })
   .demandOption(
     ['bucket', 'local-path', 'remote-path'],
     'Please provide at least the required arguments to upload.',
