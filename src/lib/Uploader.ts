@@ -24,6 +24,7 @@ export type Options = {
   cacheControl?: string | { [key: string]: string };
   s3Client?: S3;
   accessControlLevel?: S3.ObjectCannedACL;
+  overwrite?: boolean;
 };
 
 const defaultOptions = {
@@ -31,6 +32,7 @@ const defaultOptions = {
   concurrency: 100,
   glob: '*.*',
   globOptions: {},
+  overwrite: true,
 };
 
 export default class Uploader {
@@ -132,12 +134,29 @@ export default class Uploader {
    * @param remotePath The path to upload the file to in the bucket
    * @returns The remote path upload location relative to the bucket
    */
-  public uploadFile(localFilePath: string, remotePath: string): Promise<string> {
-    const body = fs.createReadStream(localFilePath);
+  public async uploadFile(localFilePath: string, remotePath: string): Promise<string> {
     const { dryRun, bucket: Bucket, accessControlLevel: ACL } = this.options;
-    const params: S3.PutObjectRequest = {
+    const baseParams = {
       Bucket,
       Key: remotePath.replace(/\\/g, '/'),
+    };
+    if (!this.options.overwrite) {
+      try {
+        await this.s3.headObject(baseParams).promise();
+        // tslint:disable-next-line no-console
+        console.log('File exists, skipping: ', baseParams.Key);
+        return baseParams.Key;
+      } catch (err) {
+        if (err.code !== 'NotFound') {
+          // tslint:disable-next-line no-console
+          console.error('err:', err);
+          throw err;
+        }
+      }
+    }
+    const body = fs.createReadStream(localFilePath);
+    const params: S3.PutObjectRequest = {
+      ...baseParams,
       Body: body,
       ContentType: mime.getType(localFilePath),
       CacheControl: this.getCacheControlValue(localFilePath),
@@ -146,17 +165,15 @@ export default class Uploader {
       params.ACL = ACL;
     }
 
-    return new Promise(resolve => {
-      if (!dryRun) {
-        this.s3.upload(params, err => {
-          // tslint:disable-next-line no-console
-          if (err) console.error('err:', err);
-          resolve(params.Key);
-        });
-      } else {
-        resolve(params.Key);
+    if (!dryRun) {
+      try {
+        await this.s3.upload(params).promise();
+      } catch (err) {
+        // tslint:disable-next-line no-console
+        console.error('err:', err);
       }
-    });
+    }
+    return params.Key;
   }
 
   /**

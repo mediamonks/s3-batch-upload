@@ -47,6 +47,7 @@ Options:
   -acl, --access-control-level  Sets the access control level for uploaded files
                                                                                                   [string] [default: "undefined"]
   -c, --config         The AWS config json path to load S3 credentials with loadFromPath.                       [string]
+  -o, --overwrite      Overwrite remote files with the same name, or skip them.                [boolean] [default: true]
   -h, --help           Show help                                                                               [boolean]
 
 Examples:
@@ -55,6 +56,7 @@ Examples:
   cli.js ... -a '{ "**/*.json": "max-age=300", "**/*.*":       Upload files from a local folder to a s3 bucket path
   "max-age=3600" }'
   cli.js ... -g "*" --go.nodir true --go.dot true               Upload files from a local folder (including files with or without extension and .dot files)
+  cli.js --no-overwrite ...                                     Skip uploading files which exist already on s3
   cli.js -d ...                                                 Dry run upload
 
 for more information about AWS authentication, please visit
@@ -81,6 +83,7 @@ const files = await new Uploader({
     '**/*.json': 'max-age=300', // 5 mins for other jsons
     '**/*.*': 'max-age=3600', // 1 hour for everthing else
   },
+  overwrite: false, // overwrite remote files with the same name, default is true
   accessControlLevel: 'bucket-owner-full-control' // optional, not passed if undefined. - available options - "private"|"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control"
 }).upload();
 
