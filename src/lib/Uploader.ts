@@ -51,6 +51,8 @@ export default class Uploader {
         AWS.config.loadFromPath(this.options.config);
       } else if (typeof this.options.config === 'object') {
         AWS.config.constructor(this.options.config);
+      } else {
+        throw new Error('unsupported config is passed as a argument.');
       }
     }
 
