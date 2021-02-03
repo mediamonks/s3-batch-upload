@@ -70,6 +70,11 @@ import Uploader from 's3-batch-upload';
 
 const files = await new Uploader({
   config: './config/configS3.json', // can also use environment variables
+  config: { // or you can use a object
+    accessKeyId: "__EMPTY__",
+    secretAccessKey: "__EMPTY__",
+    region: "us-east-1"
+  },
   bucket: 'bucket-name',
   localPath: './files',
   remotePath: 'remote/path/in/bucket',

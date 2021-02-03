@@ -1,5 +1,6 @@
 import streamBatch from './batch';
 import S3 from 'aws-sdk/clients/s3';
+import { ConfigurationOptions } from 'aws-sdk/lib/config';
 
 const glob = require('glob');
 const minimatch = require('minimatch');
@@ -15,7 +16,7 @@ export type Options = {
   bucket: string;
   localPath: string;
   remotePath: string;
-  config?: string;
+  config?: string | ConfigurationOptions;
   glob?: string;
   globOptions?: object;
   concurrency?: number;
@@ -46,7 +47,13 @@ export default class Uploader {
     };
 
     if (this.options.config) {
-      AWS.config.loadFromPath(this.options.config);
+      if (typeof this.options.config === 'string') {
+        AWS.config.loadFromPath(this.options.config);
+      } else if (typeof this.options.config === 'object') {
+        AWS.config.constructor(this.options.config);
+      } else {
+        throw new Error('unsupported config is passed as a argument.');
+      }
     }
 
     // TODO: more checks on other options?
