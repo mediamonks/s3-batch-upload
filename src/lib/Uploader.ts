@@ -1,11 +1,10 @@
 import streamBatch from './batch';
-import S3 from 'aws-sdk/clients/s3';
-import { ConfigurationOptions } from 'aws-sdk/lib/config';
+
+import { HeadObjectCommand, ObjectCannedACL, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 
 const glob = require('glob');
 const minimatch = require('minimatch');
 const path = require('path');
-const AWS = require('aws-sdk');
 const ProgressBar = require('progress');
 const ora = require('ora');
 const chalk = require('chalk');
@@ -16,14 +15,14 @@ export type Options = {
   bucket: string;
   localPath: string;
   remotePath: string;
-  config?: string | ConfigurationOptions;
   glob?: string;
   globOptions?: object;
   concurrency?: number;
   dryRun?: boolean;
   cacheControl?: string | { [key: string]: string };
-  s3Client?: S3;
-  accessControlLevel?: S3.ObjectCannedACL;
+  config?: S3ClientConfig;
+  s3Client?: S3Client;
+  accessControlLevel?: ObjectCannedACL;
   overwrite?: boolean;
 };
 
@@ -36,7 +35,7 @@ const defaultOptions = {
 };
 
 export default class Uploader {
-  private s3: S3;
+  private s3: S3Client;
   private options: Options;
   private bar: any;
 
@@ -46,22 +45,20 @@ export default class Uploader {
       ...options,
     };
 
-    if (this.options.config) {
-      if (typeof this.options.config === 'string') {
-        AWS.config.loadFromPath(this.options.config);
-      } else if (typeof this.options.config === 'object') {
-        AWS.config.constructor(this.options.config);
-      } else {
-        throw new Error('unsupported config is passed as a argument.');
-      }
-    }
-
     // TODO: more checks on other options?
     if (!this.options.bucket) {
       throw new Error('No bucket defined!');
     }
 
-    this.s3 = this.options.s3Client || new AWS.S3();
+    if (this.options.config && this.options.s3Client) {
+      throw new Error('define config or s3Client not both.');
+    } else if (this.options.s3Client) {
+      this.s3 = this.options.s3Client;
+    } else if (this.options.config) {
+      this.s3 = new S3Client(this.options.config);
+    } else {
+      throw new Error('neither s3Client or config has been defined one is required.');
+    }
   }
 
   /**
@@ -144,7 +141,7 @@ export default class Uploader {
     };
     if (!this.options.overwrite) {
       try {
-        await this.s3.headObject(baseParams).promise();
+        const data = await this.s3.send(new HeadObjectCommand(baseParams));
         // tslint:disable-next-line no-console
         console.log('File exists, skipping: ', baseParams.Key);
         return baseParams.Key;
