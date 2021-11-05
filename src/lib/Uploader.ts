@@ -173,6 +173,7 @@ export default class Uploader {
       } catch (err) {
         // tslint:disable-next-line no-console
         console.error('err:', err);
+        throw err;
       }
     }
     return params.Key;
