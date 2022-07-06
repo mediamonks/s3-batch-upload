@@ -15,8 +15,12 @@ describe('Uploader', () => {
       this.timeout(10000);
 
       const s3 = {
-        upload(_, cb) {
-          cb(null);
+        upload() {
+          return {
+            async promise() {
+              return null;
+            }
+          }
         }
       };
       spy(s3, "upload");
@@ -50,8 +54,12 @@ describe('Uploader', () => {
       this.timeout(10000);
 
       const s3 = {
-        upload(_, cb) {
-          cb(null);
+        upload() {
+          return {
+            async promise() {
+              return null;
+            }
+          }
         }
       };
       spy(s3, "upload");
@@ -87,8 +95,12 @@ describe('Uploader', () => {
       this.timeout(5000);
 
       const s3 = {
-        upload(_, cb) {
-          cb(null);
+        upload() {
+          return {
+            async promise() {
+              return null;
+            }
+          }
         }
       };
       spy(s3, "upload");
@@ -123,13 +135,17 @@ describe('Uploader', () => {
         this.timeout(10000);
 
         const s3 = {
-          upload(_, cb) {
-            cb(null);
-          },
-          headObject(_) {
+          upload() {
             return {
-              promise() {
-                return Promise.resolve(null)
+              async promise() {
+                return null;
+              }
+            }
+          },
+          headObject() {
+            return {
+              async promise() {
+                return null;
               }
             }
           }
@@ -161,15 +177,19 @@ describe('Uploader', () => {
         this.timeout(10000);
 
         const s3 = {
-          upload(_, cb) {
-            cb(null);
+          upload() {
+            return {
+              async promise() {
+                return null;
+              }
+            }
           },
           headObject(_) {
             return {
-              promise() {
+              async promise() {
                 const err: any = new Error()
                 err.code = 'NotFound'
-                return Promise.reject(err)
+                throw err;
               }
             }
           }
@@ -248,8 +268,12 @@ describe('Uploader', () => {
         this.timeout(5000);
 
         const s3 = {
-          upload(_, cb) {
-            cb(null);
+          upload() {
+            return {
+              async promise() {
+                return null;
+              }
+            }
           }
         };
         spy(s3, "upload");
@@ -275,8 +299,12 @@ describe('Uploader', () => {
         this.timeout(10000);
 
         const s3 = {
-          upload(_, cb) {
-            cb(null);
+          upload() {
+            return {
+              async promise() {
+                return null;
+              }
+            }
           }
         };
         spy(s3, "upload");
